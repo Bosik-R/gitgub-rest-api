@@ -1,0 +1,18 @@
+section {
+	width: 400px;
+	padding: 10px;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: center;
+
+	h2 {
+		text-transform: uppercase;
+		color: white;
+	}
+
+	.pagesNav {
+		background-color: white;
+		color: black;
+	}
+}
