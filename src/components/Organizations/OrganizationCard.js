@@ -1,51 +1,65 @@
 import React, { useState, useEffect } from 'react';
-import './OrganizationCard.module.scss';
+import styles from './OrganizationCard.module.scss';
 
-const OrganizationCard = ({ login }) => {
-	const [orgName, setOrgName] = useState('dffg');
-	const [members, setMembers] = useState('fgdfgdg');
-	const [repos, setRepos] = useState('dfgdfgdfg');
-	const [date, setDate] = useState('dfdsdfgsdfgds');
+const OrganizationCard = ({ login, setOrgData }) => {
+	const [data, setData] = useState(null);
+	const [membersData, setMembersData] = useState('');
 
-	const getName = async () => {
-		const url = `https://api.github.com/orgs/${login}`;
-		const params = {
-			method: 'GET',
-		};
-		const response = await fetch(url, params);
-		const result = await response.json();
-		console.log('getName  :', result);
-		setOrgName(result.name);
+	const headers = {
+		Accept: 'application/vnd.github.v3+json',
+	};
+	const params = {
+		method: 'GET',
+		headers: headers,
 	};
 
-	const getMembers = async () => {
-		const url = `https://api.github.com/orgs/errfree/members`;
-		const params = {
-			method: 'GET',
-		};
+	const getOrganization = async () => {
+		const url = `https://api.github.com/orgs/${login}`;
 		const response = await fetch(url, params);
 		const result = await response.json();
-		console.log(result);
-		setMembers(result.length);
+		setData(result);
+	};
+
+	const getOrgMembers = async () => {
+		const url = `https://api.github.com/orgs/${login}/members`;
+		const response = await fetch(url, params);
+		const result = await response.json();
+		setMembersData(result);
+	};
+
+	const handleClick = () => {
+		setOrgData(data, membersData);
 	};
 
 	useEffect(() => {
-		//getName();
-		//getMembers();
+		getOrganization();
+		getOrgMembers();
 	}, []);
 
-	return (
-		<article>
-			<p>organization name</p>
-			<p>{orgName}</p>
-			<p>members count</p>
-			<p>{members}</p>
-			<p>repositories count</p>
-			<p>{repos}</p>
-			<p>establish date</p>
-			<p>{date}</p>
-		</article>
-	);
+	if (data) {
+		return (
+			<article onClick={() => handleClick()}>
+				<p>organization name:</p>
+				{data.name ? <p>{data.name}</p> : <p>{data.login}</p>}
+				<div className={styles.membersWrapper}>
+					<div>
+						<p>members</p>
+						<p>{membersData.length}</p>
+					</div>
+					<div>
+						<p>followers</p>
+						<p>{data.followers}</p>
+					</div>
+				</div>
+				<p>repositories count:</p>
+				<p>{data.public_repos}</p>
+				<p>creat date:</p>
+				<p>{data.created_at}</p>
+			</article>
+		);
+	} else {
+		return null;
+	}
 };
 
 export default OrganizationCard;

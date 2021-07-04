@@ -1,0 +1,63 @@
+import React, { useState, useEffect } from 'react';
+import Pagination from '@material-ui/lab/Pagination';
+import RepoCard from './RepoCard';
+import styles from './Repos.module.scss';
+
+const Repos = ({ org }) => {
+	const [data, setData] = useState(null);
+	const [activePage, setActivePage] = useState(1);
+	const entrysPerPage = 1;
+	console.log(org);
+
+	const headers = {
+		Accept: 'application/vnd.github.v3+json',
+	};
+	const params = {
+		method: 'GET',
+		headers: headers,
+	};
+
+	const getRepos = async () => {
+		const url = `https://api.github.com/${org}/repos`;
+
+		const response = await fetch(url, params);
+		const links = [response.headers.get('link')];
+		console.log(links);
+		const result = await response.json();
+
+		setData(result);
+		console.log(result);
+	};
+
+	useEffect(() => {
+		getRepos();
+	}, []);
+
+	const handlePageChange = (event, value) => {
+		setActivePage(value);
+	};
+
+	return (
+		<section>
+			<h2>Repositories</h2>
+			{data
+				? data
+						.slice(activePage * entrysPerPage, (activePage + 1) * entrysPerPage)
+						.map((repo) => (
+							<RepoCard
+								key={repo.id}
+								name={repo.name}
+								owner={repo.owner.login}
+							/>
+						))
+				: null}
+			<Pagination
+				count={data ? data.length / entrysPerPage : 0}
+				page={activePage}
+				onChange={handlePageChange}
+			/>
+		</section>
+	);
+};
+
+export default Repos;

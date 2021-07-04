@@ -1,24 +1,33 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import UserCard from './UserCard';
-import './Users.modules.scss';
+import Pagination from '@material-ui/lab/Pagination';
 
-const Users = () => {
-	const [data, setData] = useState(null);
+import styles from './Users.module.scss';
 
-	const getUsers = async () => {
-		const url = 'https://api.github.com/users';
-		const response = await fetch(url);
-		const result = await response.json();
-		setData(result);
+const Users = ({ members }) => {
+	const [activePage, setActivePage] = useState(1);
+	const entrysPerPage = 5;
+	console.log(members.length);
+
+	const handlePageChange = (event, value) => {
+		setActivePage(value);
 	};
 
-	useEffect(() => {
-		getUsers();
-	}, []);
-
 	return (
-		<section>
-			{data && data.map((user) => <UserCard key={user.login} />)}
+		<section className={styles.sectionWrapper}>
+			<h2 className={styles.sectionTitle}>Members</h2>
+			{members
+				.slice(activePage * entrysPerPage, (activePage + 1) * entrysPerPage)
+				.map((member) => (
+					<UserCard key={member.login} login={member.login} />
+				))}
+			<Pagination
+				count={
+					members.length < entrysPerPage ? 1 : members.length / entrysPerPage
+				}
+				page={activePage}
+				onChange={handlePageChange}
+			/>
 		</section>
 	);
 };

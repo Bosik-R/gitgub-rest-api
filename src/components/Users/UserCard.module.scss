@@ -1,0 +1,17 @@
+.wrapper {
+	width: 300px;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: center;
+	padding: 15px;
+	border: 1px solid green;
+	border-radius: 10px;
+
+	.userAvatar {
+		width: 150px;
+		height: 150px;
+		object-fit: fill;
+		margin-bottom: 20px;
+	}
+}

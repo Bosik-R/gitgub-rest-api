@@ -1,46 +1,59 @@
 import React, { useState, useEffect } from 'react';
 import OrganizationCard from './OrganizationCard';
 import Pagination from '@material-ui/lab/Pagination';
-import './Organizations.module.scss';
+import styles from './Organizations.module.scss';
 
-const Organizations = () => {
-	const [data, setData] = useState([1, 3, 4, 5, 6, 7, 8]);
-	const [activePage, setActivePage] = useState(0);
-	const entrysPerPage = 1;
-	const pageCount = 10;
+const Organizations = ({ setOrgData }) => {
+	const [data, setData] = useState(null);
+	const [activePage, setActivePage] = useState(1);
+	const entrysPerPage = 3;
+
+	const headers = {
+		Accept: 'application/vnd.github.v3+json',
+	};
+	const params = {
+		method: 'GET',
+		headers: headers,
+	};
 
 	const getOrganizations = async () => {
-		//const url = 'https://api.github.com/rate_limit';
 		const url = 'https://api.github.com/organizations';
-		const response = await fetch(url);
+		const response = await fetch(url, params);
 		const result = await response.json();
 		setData(result);
-		console.log(result);
 	};
 
 	useEffect(() => {
-		//getOrganizations();
+		getOrganizations();
 	}, []);
 
 	const handlePageChange = (event, value) => {
 		setActivePage(value);
 	};
 
-	return (
-		<section>
-			<h2>organizations</h2>
-			{data
-				? data.map((org) => (
-						<OrganizationCard key={org.login} login={org.login} />
-				  ))
-				: null}
-			<Pagination
-				count={pageCount}
-				page={activePage}
-				onChange={handlePageChange}
-			/>
-		</section>
-	);
+	if (data) {
+		return (
+			<section className={styles.sectionWrapper}>
+				<h2 className={styles.sectionTitle}>Organizations</h2>
+				{data
+					.slice(activePage * entrysPerPage, (activePage + 1) * entrysPerPage)
+					.map((org) => (
+						<OrganizationCard
+							key={org.id}
+							login={org.login}
+							setOrgData={setOrgData}
+						/>
+					))}
+				<Pagination
+					count={data.length / entrysPerPage}
+					page={activePage}
+					onChange={handlePageChange}
+				/>
+			</section>
+		);
+	} else {
+		return null;
+	}
 };
 
 export default Organizations;
