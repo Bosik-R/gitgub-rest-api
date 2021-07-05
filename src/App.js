@@ -19,8 +19,8 @@ const App = () => {
 	return (
 		<div className='container'>
 			<Organizations setOrgData={setOrgData} />
-			{members.length > 0 && <Users members={members} />}
-			{org && <Repos org={org.name} />}
+			{/* {members.length > 0 && <Users members={members} />} */}
+			{org && <Repos repos_url={org.repos_url} />}
 		</div>
 	);
 };

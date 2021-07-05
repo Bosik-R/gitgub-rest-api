@@ -39,22 +39,13 @@ const OrganizationCard = ({ login, setOrgData }) => {
 	if (data) {
 		return (
 			<article onClick={() => handleClick()}>
-				<p>organization name:</p>
-				{data.name ? <p>{data.name}</p> : <p>{data.login}</p>}
+				{data.name ? <p>organization name: {data.name}</p> : <p>organization name: {data.login}</p>}
 				<div className={styles.membersWrapper}>
-					<div>
-						<p>members</p>
-						<p>{membersData.length}</p>
-					</div>
-					<div>
-						<p>followers</p>
-						<p>{data.followers}</p>
-					</div>
+					<p>members: {membersData.length}</p>
+					<p>followers: {data.followers}</p>
 				</div>
-				<p>repositories count:</p>
-				<p>{data.public_repos}</p>
-				<p>creat date:</p>
-				<p>{data.created_at}</p>
+				<p>repositories count: {data.public_repos}</p>
+				<p>creat date:	{data.created_at}</p>
 			</article>
 		);
 	} else {

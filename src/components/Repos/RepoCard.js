@@ -33,6 +33,7 @@ const RepoCard = ({ name, owner }) => {
 		const result = await response.json();
 		console.log(result);
 	};
+
 	const getPulls = async () => {
 		const url = `https://api.github.com/repos/${owner}/${name}/pulls?per_page=100`;
 		const response = await fetch(url);
@@ -49,7 +50,7 @@ const RepoCard = ({ name, owner }) => {
 		const result = await response.json();
 		console.log('open issues : ', result);
 		setIssues({ ...issues, open: result.length });
-		//console.log(issues);
+		console.log('open',issues);
 	};
 
 	const getClosedIssues = async () => {
@@ -57,7 +58,7 @@ const RepoCard = ({ name, owner }) => {
 
 		const response = await fetch(url, params);
 		const result = await response.json();
-		//console.log('closed issues : ', result);
+		console.log('closed issues : ', result);
 	};
 
 	const getAllIssues = async () => {
@@ -82,13 +83,13 @@ const RepoCard = ({ name, owner }) => {
 	};
 
 	useEffect(() => {
-		//rateLimit();
+		rateLimit();
 		//getRepo();
 		//getPulls();
 		//getOpenIssues();
 		//getClosedIssues();
-		getAllIssues();
-		getCommits();
+		//getAllIssues();
+		//getCommits();
 	}, []);
 
 	if (data) {
